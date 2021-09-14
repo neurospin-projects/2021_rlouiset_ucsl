@@ -4,8 +4,7 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import SpectralClustering
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC, SVR
-
-from ucsl.sinkhornknopp_utils import *
+import numpy as np
 
 
 def one_hot_encode(y, n_classes=None):

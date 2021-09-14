@@ -7,9 +7,9 @@ class BaseEM(BaseEstimator, metaclass=ABCMeta):
     """Basic class for our Machine Learning Expectation-Maximization framework."""
 
     @abstractmethod
-    def __init__(self, stability_threshold, noise_tolerance_threshold,
-                 n_consensus, n_iterations, initialization, clustering, maximization, consensus,
-                 custom_clustering_method, custom_maximization_method, custom_initialization_matrixes):
+    def __init__(self, clustering, maximization,
+                 stability_threshold, noise_tolerance_threshold,
+                 n_consensus, n_iterations):
 
         # define hyperparameters such as stability_threshold or noise_tolerance_threshold
         assert (0 < stability_threshold <= 1), "The stability_threshold value is invalid. It must be between 0 and 1."
@@ -23,33 +23,29 @@ class BaseEM(BaseEstimator, metaclass=ABCMeta):
         self.n_consensus = n_consensus
         self.n_iterations = n_iterations
 
-        # define what type of initialization, clustering, classification and consensus one wants to use
+        """# define what type of initialization, clustering, classification and consensus one wants to use
         assert (initialization in ['k_means', 'gaussian_mixture', 'DPP', 'precomputed']), \
             "Initialization must be one of 'k_means', 'gaussian_mixture', 'DPP', 'precomputed'"
         if initialization == 'precomputed' :
             assert (custom_initialization_matrixes is not None), \
                 "if initialization is custom you have to pass a initialization_matrixes different from None"
             self.custom_initialization_matrixes = custom_initialization_matrixes
-        self.initialization = initialization
+        self.initialization = initialization"""
 
-        assert (clustering in ['k_means', 'gaussian_mixture', 'HYDRA', 'custom']), \
+        """assert (clustering in ['k_means', 'gaussian_mixture', 'HYDRA', 'custom']), \
             "Clustering must be one of 'k_means', 'gaussian_mixture', 'HYDRA', 'custom'"
         if clustering == 'custom' :
             assert (custom_clustering_method is not None), \
                 "if clustering is custom you have to pass a custom_clustering_method different from None"
-            self.custom_clustering_method = custom_clustering_method
+            self.custom_clustering_method = custom_clustering_method"""
         self.clustering = clustering
 
-        assert (maximization in ['max_margin', 'logistic', 'svr', 'custom']), \
+        """assert (maximization in ['max_margin', 'logistic', 'svr', 'custom']), \
             "maximization must be one of 'max_margin', 'logistic', 'svr', 'custom'"
         if maximization == 'custom' :
             assert (custom_maximization_method is not None), \
                 "if maximization is custom you have to pass a custom_maximization_method different from None"
-            self.custom_classification_method = custom_maximization_method
+            self.custom_classification_method = custom_maximization_method"""
         self.maximization = maximization
-
-        assert (consensus in ['spectral_clustering']), \
-            "Classification must be one of 'spectral_clustering'"
-        self.consensus = consensus
 
 
