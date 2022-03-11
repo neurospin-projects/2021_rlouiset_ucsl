@@ -23,29 +23,10 @@ class BaseEM(BaseEstimator, metaclass=ABCMeta):
         self.n_consensus = n_consensus
         self.n_iterations = n_iterations
 
-        """# define what type of initialization, clustering, classification and consensus one wants to use
-        assert (initialization in ['k_means', 'gaussian_mixture', 'DPP', 'precomputed']), \
-            "Initialization must be one of 'k_means', 'gaussian_mixture', 'DPP', 'precomputed'"
-        if initialization == 'precomputed' :
-            assert (custom_initialization_matrixes is not None), \
-                "if initialization is custom you have to pass a initialization_matrixes different from None"
-            self.custom_initialization_matrixes = custom_initialization_matrixes
-        self.initialization = initialization"""
+        assert (clustering in ['k_means', 'full_gaussian_mixture', 'spherical_gaussian_mixture']), \
+            "Clustering must be one of 'k_means', 'full_gaussian_mixture', 'spherical_gaussian_mixture'"
+        self.clustering_method_name = clustering
 
-        """assert (clustering in ['k_means', 'gaussian_mixture', 'HYDRA', 'custom']), \
-            "Clustering must be one of 'k_means', 'gaussian_mixture', 'HYDRA', 'custom'"
-        if clustering == 'custom' :
-            assert (custom_clustering_method is not None), \
-                "if clustering is custom you have to pass a custom_clustering_method different from None"
-            self.custom_clustering_method = custom_clustering_method"""
-        self.clustering = clustering
-
-        """assert (maximization in ['max_margin', 'logistic', 'svr', 'custom']), \
-            "maximization must be one of 'max_margin', 'logistic', 'svr', 'custom'"
-        if maximization == 'custom' :
-            assert (custom_maximization_method is not None), \
-                "if maximization is custom you have to pass a custom_maximization_method different from None"
-            self.custom_classification_method = custom_maximization_method"""
         self.maximization = maximization
 
 
