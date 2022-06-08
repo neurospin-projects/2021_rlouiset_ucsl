@@ -178,8 +178,7 @@ class UCSL_R(BaseEM, RegressorMixin):
             Q_distances = np.zeros((len(X_proj), self.n_clusters))
             for cluster in range(self.n_clusters):
                 Q_distances[:, cluster] = np.sum((X_proj - self.barycenters[cluster][None, :])**2, 1)
-            Q_distances = - Q_distances
-            Q_distances = Q_distances - np.sum(Q_distances, axis=1, keepdims=True)
+            Q_distances = 1 / (Q_distances + 1e-5)
             y_pred_proba_clusters = Q_distances / np.sum(Q_distances, 1)[:, None]
         elif self.clustering_method_name in ['full_gaussian_mixture', 'spherical_gaussian_mixture'] :
             y_pred_proba_clusters = self.clustering_method[-1].predict_proba(X_proj)
@@ -225,8 +224,7 @@ class UCSL_R(BaseEM, RegressorMixin):
             KM_barycenters = KM.cluster_centers_
             for cluster in range(self.n_clusters):
                 S[:, cluster] = np.sum((X - KM_barycenters[cluster])**2, 1)
-            S = - S
-            S = S - np.sum(S, axis=1, keepdims=True)
+            S = 1 / (S + 1e-5)
             S = S / np.sum(S, 1)[:, None]
 
         elif self.clustering_method_name == "spherical_gaussian_mixture":
@@ -304,8 +302,7 @@ class UCSL_R(BaseEM, RegressorMixin):
             Q = np.ones((len(X_proj), self.n_clusters)) / self.n_clusters
             for cluster in range(self.n_clusters):
                 Q[:, cluster] = np.sum((X_proj - KM_barycenters[cluster][None, :])**2, 1)
-            Q = - Q
-            Q = Q + np.sum(Q, axis=1, keepdims=True)
+            Q = 1 / (Q + 1e-5)
             Q = Q / np.sum(Q, 1)[:, None]
         elif self.clustering_method_name == 'spherical_gaussian_mixture':
             self.clustering_method[consensus] = GaussianMixture(n_components=self.n_clusters, covariance_type="spherical", means_init=np.array(centroids)).fit(X_proj)
