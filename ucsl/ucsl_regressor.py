@@ -23,8 +23,8 @@ class UCSL_R(BaseEM, RegressorMixin):
 
     maximization ; string or object, optional (default="lr")
         Classification method for the maximization step,
-        If not specified, "lr" (Logistic Regression) will be used.
-        It must be one of "k_means", "gaussian_mixture"
+        If not specified, "linear" (Linear Regression) will be used.
+        It must be one of "linear", "support_vector"
         It can also be a sklearn-like object with fit and predict methods; coef_ and intercept_ attributes.
 
     n_clusters : int, optional (default=2)
@@ -56,7 +56,7 @@ class UCSL_R(BaseEM, RegressorMixin):
 
     def __init__(self, stability_threshold=0.9, noise_tolerance_threshold=10,
                  n_consensus=10, n_iterations=10, n_clusters=2,
-                 clustering='spherical_gaussian_mixture', maximization='logistic'):
+                 clustering='spherical_gaussian_mixture', maximization='linear'):
 
         super().__init__(clustering=clustering, maximization=maximization,
                          stability_threshold=stability_threshold, noise_tolerance_threshold=noise_tolerance_threshold,
@@ -157,7 +157,7 @@ class UCSL_R(BaseEM, RegressorMixin):
         for cluster_i in range(self.n_clusters):
             SVM_coefficient = self.coefficients[cluster_i]
             SVM_intercept = self.intercepts[cluster_i]
-            regression_results[:, cluster_i] = X @ SVM_coefficient[0] + SVM_intercept[0]
+            regression_results[:, cluster_i] = X @ SVM_coefficient + SVM_intercept
 
         return regression_results
 
@@ -243,13 +243,13 @@ class UCSL_R(BaseEM, RegressorMixin):
         return S, cluster_index
 
     def maximization_step(self, X, y, S, iteration):
-        if self.maximization == "logistic":
+        if self.maximization == "linear":
             for cluster in range(self.n_clusters):
                 cluster_assignment = np.ascontiguousarray(S[:, cluster])
-                logistic_coefficient, logistic_intercept = launch_logistic(X, y, cluster_assignment)
+                logistic_coefficient, logistic_intercept = launch_linear(X, y, cluster_assignment)
                 self.coefficients[cluster] = logistic_coefficient
                 self.intercepts[cluster] = logistic_intercept
-        if self.maximization == "svr":
+        elif self.maximization == "support_vector":
             for cluster in range(self.n_clusters):
                 cluster_assignment = np.ascontiguousarray(S[:, cluster])
                 logistic_coefficient, logistic_intercept = launch_svr(X, y, cluster_assignment)
@@ -283,7 +283,7 @@ class UCSL_R(BaseEM, RegressorMixin):
         # get directions basis
         directions_basis = []
         for cluster in range(self.n_clusters):
-            directions_basis.extend(self.coefficients[cluster])
+            directions_basis.append(self.coefficients[cluster])
         norm_directions = [np.linalg.norm(direction) for direction in directions_basis]
         directions_basis = np.array(directions_basis) / np.array(norm_directions)[:, None]
 

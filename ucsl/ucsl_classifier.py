@@ -25,10 +25,10 @@ class UCSL_C(BaseEM, ClassifierMixin):
         If not specified, "spherical_gaussian_mixture" (spherical by default) will be used.
         It must be one of "spherical_gaussian_mixture", "full_gaussian_mixture", "k-means"
 
-    maximization ; string or object, optional (default="lr")
+    maximization ; string or object, optional (default="linear")
         Classification method for the maximization step,
-        If not specified, "lr" (Logistic Regression) will be used.
-        It must be one of "lr", "svc"
+        If not specified, "linear" (Logistic Regression) will be used.
+        It must be one of "linear", "support_vector"
         It can also be a sklearn-like object with fit and predict methods; coef_ and intercept_ attributes.
 
     negative_weighting : string, optional (default="soft")
@@ -79,7 +79,7 @@ class UCSL_C(BaseEM, ClassifierMixin):
     def __init__(self, stability_threshold=0.9, noise_tolerance_threshold=10,
                  n_consensus=10, n_iterations=10,
                  n_clusters=2, label_to_cluster=1,
-                 clustering='spherical_gaussian_mixture', maximization='logistic',
+                 clustering='spherical_gaussian_mixture', maximization='linear',
                  negative_weighting='soft', positive_weighting='hard',
                  training_label_mapping=None):
 
@@ -150,7 +150,7 @@ class UCSL_C(BaseEM, ClassifierMixin):
         Parameters
         ----------
         X : array-like, shape (n_samples, n_features)
-            Query points to be evaluate.
+            Query points to be evaluated.
         y_true : array-like, shape (n_samples, n_features)
             Ground truth classification labels.
         Returns
@@ -277,11 +277,11 @@ class UCSL_C(BaseEM, ClassifierMixin):
         return y_pred_proba_clusters
 
     def run(self, X, y, idx_outside_polytope):
-        # set label idx_outside_polytope outside of the polytope by setting it to positive labels
+        # set label idx_outside_polytope outside the polytope by setting it to positive labels
         y_polytope = np.copy(y)
-        # if label is inside of the polytope, the distance is negative and the label is not divided into
+        # if label is inside the polytope, the distance is negative and the label is not divided into
         y_polytope[y_polytope != idx_outside_polytope] = -1
-        # if label is outside of the polytope, the distance is positive and the label is clustered
+        # if label is outside the polytope, the distance is positive and the label is clustered
         y_polytope[y_polytope == idx_outside_polytope] = 1
 
         index_positives = np.where(y_polytope == 1)[0]  # index for Positive labels (outside polytope)
@@ -349,14 +349,14 @@ class UCSL_C(BaseEM, ClassifierMixin):
         return S, cluster_index
 
     def maximization_step(self, X, y_polytope, S):
-        if self.maximization == "svc":
+        if self.maximization == "support_vector":
             for cluster in range(self.n_clusters):
                 cluster_assignment = np.ascontiguousarray(S[:, cluster])
                 SVM_coefficient, SVM_intercept = launch_svc(X, y_polytope, cluster_assignment)
                 self.coefficients[cluster] = SVM_coefficient
                 self.intercepts[cluster] = SVM_intercept
 
-        elif self.maximization == "lr":
+        elif self.maximization == "linear":
             for cluster in range(self.n_clusters):
                 cluster_assignment = np.ascontiguousarray(S[:, cluster])
                 logistic_coefficient, logistic_intercept = launch_logistic(X, y_polytope, cluster_assignment)

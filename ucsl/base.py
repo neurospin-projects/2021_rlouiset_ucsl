@@ -27,6 +27,8 @@ class BaseEM(BaseEstimator, metaclass=ABCMeta):
             "Clustering must be one of 'k_means', 'full_gaussian_mixture', 'spherical_gaussian_mixture'"
         self.clustering_method_name = clustering
 
+        assert (maximization in ['linear', 'support_vector']), \
+            "Maximization must be one of 'linear', 'support_vector'"
         self.maximization = maximization
 
 

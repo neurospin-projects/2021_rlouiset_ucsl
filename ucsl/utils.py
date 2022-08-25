@@ -2,7 +2,7 @@ import scipy
 from scipy.special import logsumexp
 from sklearn.cluster import KMeans
 from sklearn.cluster import SpectralClustering
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.svm import SVC, SVR
 import numpy as np
 
@@ -180,5 +180,31 @@ def launch_logistic(X, y, sample_weight=None):
     # get logistic coefficient and intercept
     logistic_coefficient = logistic.coef_
     logistic_intercept = logistic.intercept_
+
+    return logistic_coefficient, logistic_intercept
+
+def launch_linear(X, y, sample_weight=None):
+    """Fit the linear regressions according to the given training data.
+    Parameters
+    ----------
+    X : array-like, shape (n_samples, n_features)
+        Training vectors.
+    y : array-like, shape (n_samples,)
+        Target values.
+    sample_weight : array-like, shape (n_samples,)
+        Training sample weights.
+    Returns
+    -------
+    logistic_coefficient : array-like, shape (1, n_features)
+        The coefficient of the resulting logistic regression.
+    """
+
+    # fit the different linear regressor
+    linear = LinearRegression()
+    linear.fit(X, y, sample_weight=sample_weight)
+
+    # get logistic coefficient and intercept
+    logistic_coefficient = linear.coef_
+    logistic_intercept = linear.intercept_
 
     return logistic_coefficient, logistic_intercept
