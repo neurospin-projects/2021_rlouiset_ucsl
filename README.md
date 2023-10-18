@@ -19,7 +19,7 @@ sudo apt-get install python-numpy python-scipy
 
 Clone the repository from github
 ```
-git clone https://github.com/rlouiset/UCSL.git
+git clone https://github.com/neurospin-projects/2021_rlouiset_ucsl.git
 ```
 
 Add `UCSL` in your `$PYTHONPATH`
