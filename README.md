@@ -25,11 +25,6 @@ git clone https://github.com/rlouiset/UCSL.git
 Add `UCSL` in your `$PYTHONPATH`
 
 
-Original code and examples
--------
-
-See original, unclean code and examples at "https://github.com/rlouiset/py_ucsl"
-
 Original paper
 -------
 
